@@ -1,17 +1,11 @@
-//
-// Source code recreated from a .class file by IntelliJ IDEA
-// (powered by FernFlower decompiler)
-//
-
 package dbs.student_test;
 
-import dbs.student_test.dao.StudentDAO;
+import dbs.student_test.dao.StudentDAOImpl;
 import dbs.student_test.entity.Student;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
 
 import java.util.List;
 
@@ -22,47 +16,43 @@ public class DemoApplication {
     }
 
     @Bean
-    public CommandLineRunner commandLineRunner(StudentDAO studentDAO) {
+    public CommandLineRunner commandLineRunner(StudentDAOImpl studentDAO) {
         return (runner) -> {
-//            this.CreateStudent(studentDAO);
-//            this.readStudent(studentDAO);
-//            this.queryForStudents(studentDAO);
-//            this.queryForStudentsByLastName(studentDAO);
-
-//            Fetch user from database
-
+//           Create a user
+            this.CreateStudent(studentDAO);
 //
-//            Pass user first name to controller
-
-//            Render the users name from the database
+//            Check user is in DB
+            this.readStudentWithID1(studentDAO);
+//
+//            Fetch user from database
+            this.queryForStudents(studentDAO);
         };
     }
 
-    public String queryForStudentFirstNameByLastName(StudentDAO studentDAO) {
+    public String queryForStudentFirstNameByLastName(StudentDAOImpl studentDAO) {
         List<Student> tempStudents = studentDAO.findByLastName("duck");
-        for(Student tempStudent : tempStudents) {
+        for (Student tempStudent : tempStudents) {
             System.out.println(tempStudent.getFirstName());
         }
         return tempStudents.getFirst().getFirstName();
     }
 
-    private void queryForStudents(StudentDAO studentDAO) {
-        for(Student tempStudent : studentDAO.findAll()) {
+    private void queryForStudents(StudentDAOImpl studentDAO) {
+        for (Student tempStudent : studentDAO.findAll()) {
             System.out.println(tempStudent.getFirstName());
         }
-
     }
 
-    private void readStudent(StudentDAO studentDAO) {
+    private void readStudentWithID1(StudentDAOImpl studentDAO) {
         Student myStudent = studentDAO.findById(1);
         System.out.println(myStudent.getFirstName());
     }
 
-    private void CreateStudent(StudentDAO studentDAO) {
-        System.out.println("creating");
+    private void CreateStudent(StudentDAOImpl studentDAO) {
+//      Create new student with hardcoded values
         Student tempStudent = new Student("duck;", "dddd", "dsajdfonsdasdfkiafd@sdafayeu");
-        System.out.println("saving");
+//
+//       Save student
         studentDAO.save(tempStudent);
-        System.out.println("saved" + tempStudent.getId());
     }
 }

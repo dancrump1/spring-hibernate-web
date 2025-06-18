@@ -21,17 +21,20 @@ public class StudentDAOImpl implements StudentDAO {
         this.entityManager = entityManager;
     }
 
+//    Implement save method
     @Override
     @Transactional
     public void save (Student theStudent) {
         entityManager.persist(theStudent);
     }
 
+//    Implement findById method
     @Override
     public Student findById(Integer id) {
         return entityManager.find(Student.class, id);
     }
 
+//    Implement findAll method
     @Override
     public List<Student> findAll() {
         TypedQuery<Student> theQuery = entityManager.createQuery("FROM Student order by lastName", Student.class);
@@ -39,6 +42,7 @@ public class StudentDAOImpl implements StudentDAO {
         return theQuery.getResultList();
     }
 
+//    Implement findByLastName method
     @Override
     public List<Student> findByLastName(String theLastName) {
         // create query
