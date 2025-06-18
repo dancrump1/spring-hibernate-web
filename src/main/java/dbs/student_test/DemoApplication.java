@@ -12,6 +12,8 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
+import java.util.List;
+
 @SpringBootApplication
 public class DemoApplication {
     public static void main(String[] args) {
@@ -25,14 +27,22 @@ public class DemoApplication {
 //            this.readStudent(studentDAO);
 //            this.queryForStudents(studentDAO);
 //            this.queryForStudentsByLastName(studentDAO);
+
+//            Fetch user from database
+
+//
+//            Pass user first name to controller
+
+//            Render the users name from the database
         };
     }
 
-    private void queryForStudentsByLastName(StudentDAO studentDAO) {
-        for(Student tempStudent : studentDAO.findByLastName("duck")) {
+    public String queryForStudentFirstNameByLastName(StudentDAO studentDAO) {
+        List<Student> tempStudents = studentDAO.findByLastName("duck");
+        for(Student tempStudent : tempStudents) {
             System.out.println(tempStudent.getFirstName());
         }
-
+        return tempStudents.getFirst().getFirstName();
     }
 
     private void queryForStudents(StudentDAO studentDAO) {
