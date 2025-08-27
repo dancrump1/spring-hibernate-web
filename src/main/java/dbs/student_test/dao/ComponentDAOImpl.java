@@ -30,9 +30,7 @@ public class ComponentDAOImpl implements ComponentDAO {
 
 
     public Component findByTitle(String title) {
-        List<Component> components = entityManager.createQuery(
-                        "SELECT c FROM Component c", Component.class)
-                .getResultList();
+
 
 
         try {
@@ -48,7 +46,9 @@ public class ComponentDAOImpl implements ComponentDAO {
 
     @Override
     public List<Component> findAll() {
-        return List.of();
+        return entityManager.createQuery(
+                        "SELECT c FROM Component c", Component.class)
+                .getResultList();
     }
 
     public List<Component> findByCategory(int categoryId) {
