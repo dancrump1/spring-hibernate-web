@@ -34,7 +34,7 @@ public class ComponentDAOImpl implements ComponentDAO {
                         "SELECT c FROM Component c", Component.class)
                 .getResultList();
 
-        components.forEach(System.out::println);
+
         try {
             return entityManager.createQuery(
                             "SELECT c FROM Component c WHERE LOWER(c.name) = LOWER(:title)", Component.class)

@@ -24,7 +24,7 @@ public class DemoComponentController {
        Component component = componentDAO.findByTitle(component_name);
 
         if (component != null) {
-            return "Found component: " + component.getName();
+            return "Found component: " + component.getName() + " " + component.getDescription() + " " + component.getCategories();
         } else {
             throw new ComponentNotFoundException("Component not found: " + component_name);
         }
