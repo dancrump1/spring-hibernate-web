@@ -1,6 +1,7 @@
 package dbs.student_test.dao;
 
 import dbs.student_test.entity.Component;
+import dbs.student_test.rest.ComponentNotFoundException;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
 import jakarta.persistence.TypedQuery;
@@ -23,22 +24,27 @@ public class ComponentDAOImpl implements ComponentDAO {
 
     @Override
     @Transactional
-    public void save (Component theComponent){
-         entityManager.persist(theComponent);
+    public void save(Component theComponent) {
+        entityManager.persist(theComponent);
     }
 
 
-    public Optional<Component> findByTitle(String title) {
+    public Component findByTitle(String title) {
+        List<Component> components = entityManager.createQuery(
+                        "SELECT c FROM Component c", Component.class)
+                .getResultList();
+
+        components.forEach(System.out::println);
         try {
-            Component component = entityManager.createQuery(
-                            "SELECT c FROM Component c WHERE c.title = :title", Component.class)
-                    .setParameter("title", title)
+            return entityManager.createQuery(
+                            "SELECT c FROM Component c WHERE LOWER(c.name) = LOWER(:title)", Component.class)
+                    .setParameter("title", title.toLowerCase())
                     .getSingleResult();
-            return Optional.of(component);
         } catch (NoResultException e) {
-            return Optional.empty();
+            throw new ComponentNotFoundException("Failed to search for component: " + title);
         }
     }
+
 
     @Override
     public List<Component> findAll() {

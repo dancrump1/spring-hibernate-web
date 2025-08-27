@@ -1,16 +1,10 @@
 package dbs.student_test.rest;
 
-import dbs.student_test.dao.ComponentDAO;
 import dbs.student_test.dao.ComponentDAOImpl;
 import dbs.student_test.entity.Component;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Objects;
-import java.util.Optional;
-
 
 @CrossOrigin(origins = "http://localhost:3006")
 @RestController
@@ -27,10 +21,10 @@ public class DemoComponentController {
     @GetMapping("/name/{component_name}")
     public String sayHello(@PathVariable String component_name) {
 
-        Optional<Optional<Component>> component = Optional.ofNullable(componentDAO.findByTitle(component_name));
+       Component component = componentDAO.findByTitle(component_name);
 
-        if (component.isPresent()) {
-            return "Found component: " + component.get().getClass();
+        if (component != null) {
+            return "Found component: " + component.getName();
         } else {
             throw new ComponentNotFoundException("Component not found: " + component_name);
         }

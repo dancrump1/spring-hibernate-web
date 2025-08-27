@@ -10,7 +10,7 @@ import java.util.Optional;
 public interface ComponentDAO {
     void save(Component var1);
 
-    Optional<Component> findByTitle(String var1);
+    Component findByTitle(String var1);
 
     List<Component> findAll();
 
