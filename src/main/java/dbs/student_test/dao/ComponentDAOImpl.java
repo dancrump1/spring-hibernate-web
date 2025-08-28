@@ -5,12 +5,10 @@ import dbs.student_test.rest.ComponentNotFoundException;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
 import jakarta.persistence.TypedQuery;
-import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
-import java.util.Optional;
 
 @Repository
 public class ComponentDAOImpl implements ComponentDAO {
@@ -23,15 +21,11 @@ public class ComponentDAOImpl implements ComponentDAO {
     }
 
     @Override
-    @Transactional
     public void save(Component theComponent) {
         entityManager.persist(theComponent);
     }
 
-
     public Component findByTitle(String title) {
-
-
 
         try {
             return entityManager.createQuery(
@@ -42,7 +36,6 @@ public class ComponentDAOImpl implements ComponentDAO {
             throw new ComponentNotFoundException("Failed to search for component: " + title);
         }
     }
-
 
     @Override
     public List<Component> findAll() {

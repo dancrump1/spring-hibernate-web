@@ -1,30 +1,34 @@
 package dbs.student_test.rest;
 
-import dbs.student_test.dao.ComponentDAOImpl;
 import dbs.student_test.entity.Component;
+import dbs.student_test.service.ComponentServiceImpl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @CrossOrigin(origins = "http://localhost:3006")
 @RestController
 @RequestMapping("/components")
 public class DemoComponentController {
 
-    private final ComponentDAOImpl componentDAO;
+    private final ComponentServiceImpl componentService;
 
-    public DemoComponentController(ComponentDAOImpl componentDAO) {
-        this.componentDAO = componentDAO;
+    public DemoComponentController(ComponentServiceImpl componentService) {
+        this.componentService = componentService;
     }
 
+    @GetMapping
+    public String home() {
+        return "home_page";
+    }
 
     @GetMapping("/name/{component_name}")
-    public String sayHello(@PathVariable String component_name) {
+    public String findByTitle(@PathVariable String component_name) {
 
-       Component component = componentDAO.findByTitle(component_name);
+        Component component = componentService.findByTitle(component_name);
 
         if (component != null) {
             return "Found component: " + component.getName() + " " + component.getDescription() + " " + component.getCategories();
@@ -33,16 +37,27 @@ public class DemoComponentController {
         }
     }
 
+    @GetMapping("/category/{categoryId}")
+    public Stream<String> findByCategory(@PathVariable int categoryId) {
+
+        List<Component> component = componentService.findByCategory(categoryId);
+
+        if (!component.isEmpty()) {
+            return component.stream().map(item -> {
+                return "Found component: " + item.getName() + " " + item.getDescription() + " " + item.getCategories();
+            });
+        } else {
+            throw new ComponentNotFoundException("Component not found: " + categoryId);
+        }
+    }
+
     @GetMapping("/name")
-    public String findAll() {
+    public List<Component> findAll() {
 
-       List<Component> component = componentDAO.findAll();
+        List<Component> component = componentService.findAll();
 
-        if (component != null) {
-            String names = component.stream()
-                .map(Component::getName)
-                .collect(Collectors.joining(", "));
-            return "Found components: " + names;
+        if (!component.isEmpty()) {
+            return component;
         } else {
             throw new ComponentNotFoundException("Components not found: ");
         }
@@ -57,5 +72,5 @@ public class DemoComponentController {
         error.setTimeStamp(System.currentTimeMillis());
 
         return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
-    };
+    }
 }
