@@ -33,4 +33,9 @@ public class CategoryServiceImpl {
         return categoryDAO.findAll();
     }
 
+    @Transactional
+    public void save(Category patchedCategory) {
+        categoryDAO.save(patchedCategory);
+        return;
+    }
 }

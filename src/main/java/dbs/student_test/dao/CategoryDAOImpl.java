@@ -6,6 +6,7 @@ import dbs.student_test.rest.ComponentNotFoundException;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
 import jakarta.persistence.TypedQuery;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -22,7 +23,9 @@ public class CategoryDAOImpl implements CategoryDAO {
     }
 
     @Override
+    @Transactional
     public void save(Category var1) {
+        entityManager.merge(var1);
     }
 
     @Override

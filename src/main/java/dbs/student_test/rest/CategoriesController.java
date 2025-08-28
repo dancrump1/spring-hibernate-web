@@ -1,9 +1,14 @@
 package dbs.student_test.rest;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import dbs.student_test.entity.Category;
+import dbs.student_test.service.CategoryService;
 import dbs.student_test.service.CategoryServiceImpl;
 import dbs.student_test.entity.Component;
+import dbs.student_test.service.ComponentService;
 import dbs.student_test.service.ComponentServiceImpl;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,22 +19,25 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-@CrossOrigin(origins = "http://localhost:3006")
+@CrossOrigin(origins = "http://localhost:3008")
 @RestController
 @RequestMapping("/category")
 public class CategoriesController {
 
-    private final CategoryServiceImpl categoryService;
+    private CategoryServiceImpl categoryService;
+    private ComponentServiceImpl componentService;
+    private ObjectMapper objectMapper;
 
-    public CategoriesController(CategoryServiceImpl categoryService, ComponentServiceImpl componentService) {
-        this.categoryService = categoryService;
-        this.componentService = componentService;
+    @Autowired
+    public CategoriesController(CategoryServiceImpl theCategoryService, ComponentServiceImpl theComponentService, ObjectMapper theObjectmapper) {
+        categoryService = theCategoryService;
+        componentService = theComponentService;
+        objectMapper = theObjectmapper;
     }
 
-    private ComponentServiceImpl componentService;
 
-    public void DemoComponentController(ComponentServiceImpl componentService) {
-        this.componentService = componentService;
+    public void DemoComponentController(ComponentServiceImpl theComponentService) {
+        componentService = theComponentService;
     }
 
     @GetMapping("/name/{category_name}")
@@ -84,6 +92,34 @@ public class CategoriesController {
 
         return categoriesMap;
     }
+
+    @PatchMapping("/{id}/description")
+    public Category updateCategoryDescription(
+            @PathVariable int id,
+            @RequestBody Map<String, String> requestBody) {
+
+        Category tempCategory = categoryService.findById(id);
+
+        if(tempCategory == null){
+            throw new ComponentNotFoundException("Category not found with id " + id);
+        }
+
+        Category patchedCategory = apply(requestBody, tempCategory);
+
+        categoryService.save(patchedCategory);
+
+        return patchedCategory;
+    }
+
+    private Category apply(Map<String, String> requestBody, Category tempCategory) {
+        ObjectNode categoryNode = objectMapper.convertValue(tempCategory, ObjectNode.class);
+
+        ObjectNode patchNode = objectMapper.convertValue(requestBody, ObjectNode.class);
+
+        categoryNode.setAll(patchNode);
+        return objectMapper.convertValue(categoryNode, Category.class);
+    }
+
 
     @ExceptionHandler
     public ResponseEntity<ComponentErrorResponse> handleException(ComponentNotFoundException exc) {

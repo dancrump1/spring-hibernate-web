@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.stream.Stream;
 
-@CrossOrigin(origins = "http://localhost:3006")
+@CrossOrigin(origins = "http://localhost:3008")
 @RestController
 @RequestMapping("/components")
 public class DemoComponentController {
