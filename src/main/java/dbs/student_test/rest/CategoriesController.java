@@ -41,48 +41,68 @@ public class CategoriesController {
     }
 
     @GetMapping("/name/{category_name}")
-    public String findByTitle(@PathVariable String category_name) {
+    public Category findByTitle(@PathVariable String category_name) {
         Category category = categoryService.findByTitle(category_name);
 
         if (category != null) {
-            return "Found Category: " + category.getTitle() + " " + category.getDescription() + " " + category.getId();
+            return category;
         } else {
             throw new ComponentNotFoundException("Category not found: " + category_name);
         }
     }
 
+    // DTO for the response
+    public static class CategoryResponse {
+        private String description;
+        private List<String> components;
+
+        public CategoryResponse(String description) {
+            this.description = description;
+            this.components = new ArrayList<>();
+        }
+
+        // getters & setters
+        public String getDescription() { return description; }
+        public void setDescription(String description) { this.description = description; }
+
+        public List<String> getComponents() { return components; }
+        public void setComponents(List<String> components) { this.components = components; }
+    }
+
     @GetMapping("/name")
-    public Map<String, List<String>> findAll() {
+    public Map<String, CategoryResponse> findAll() {
         List<Category> categories = categoryService.findAll();
         if (categories.isEmpty()) {
-            throw new ComponentNotFoundException("Categories not found: ");
-
+            throw new ComponentNotFoundException("Categories not found");
         }
 
         List<Component> components = componentService.findAll();
         if (components.isEmpty()) {
-            throw new ComponentNotFoundException("Components not found: ");
+            throw new ComponentNotFoundException("Components not found");
         }
-        // Build a lookup map: id → title
-        Map<Integer, String> categoryIdToTitle = categories.stream()
-                .collect(Collectors.toMap(Category::getId, Category::getTitle));
 
-        Map<String, List<String>> categoriesMap = new LinkedHashMap<>();
+        // Build lookup maps
+        Map<Integer, Category> categoryIdToCategory = categories.stream()
+                .collect(Collectors.toMap(Category::getId, c -> c));
+
+        Map<String, CategoryResponse> categoriesMap = new LinkedHashMap<>();
 
         for (Component component : components) {
             String raw = component.getCategories();
             if (raw != null && !raw.isBlank()) {
-                // remove brackets and whitespace: "[1,2]" → "1,2"
                 String cleaned = raw.replaceAll("[\\[\\]]", "");
                 String[] catIds = cleaned.split(",");
 
                 for (String catIdStr : catIds) {
                     if (!catIdStr.isBlank()) {
                         int catId = Integer.parseInt(catIdStr.trim());
-                        String categoryTitle = categoryIdToTitle.get(catId);
+                        Category category = categoryIdToCategory.get(catId);
 
-                        if (categoryTitle != null) {
-                            categoriesMap.computeIfAbsent(categoryTitle, k -> new ArrayList<>())
+                        if (category != null) {
+                            categoriesMap
+                                    .computeIfAbsent(category.getTitle(),
+                                            k -> new CategoryResponse(category.getDescription()))
+                                    .getComponents()
                                     .add(component.getName());
                         }
                     }
