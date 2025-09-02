@@ -1,12 +1,14 @@
 package dbs.student_test.rest;
 
 import dbs.student_test.entity.Component;
-import dbs.student_test.service.ComponentServiceImpl;
+import dbs.student_test.service.ComponentService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 @CrossOrigin(origins = "http://localhost:3008")
@@ -14,9 +16,9 @@ import java.util.stream.Stream;
 @RequestMapping("/components")
 public class DemoComponentController {
 
-    private final ComponentServiceImpl componentService;
+    private final ComponentService componentService;
 
-    public DemoComponentController(ComponentServiceImpl componentService) {
+    public DemoComponentController(ComponentService componentService) {
         this.componentService = componentService;
     }
 
@@ -26,29 +28,30 @@ public class DemoComponentController {
     }
 
     @GetMapping("/name/{component_name}")
-    public String findByTitle(@PathVariable String component_name) {
+    public String findByTitle(@PathVariable Integer component_name) {
 
-        Component component = componentService.findByTitle(component_name);
+        Optional<Component> component = componentService.findById(component_name);
 
-        if (component != null) {
-            return "Found component: " + component.getName() + " " + component.getDescription() + " " + component.getCategories();
+        if (component.isPresent()) {
+            return "Found component: " + component.get().getName() + " " + component.get().getDescription() + " " + component.get().getCategories();
         } else {
             throw new ComponentNotFoundException("Component not found: " + component_name);
         }
     }
 
     @GetMapping("/category/{categoryId}")
-    public Stream<String> findByCategory(@PathVariable int categoryId) {
+    public Stream<String> findByCategory(@PathVariable Integer categoryId) {
 
-        List<Component> component = componentService.findByCategory(categoryId);
+        Optional<List<Component>> component = Optional.of(componentService.findAllById(Collections.singleton(categoryId)));
 
-        if (!component.isEmpty()) {
-            return component.stream().map(item -> {
-                return "Found component: " + item.getName() + " " + item.getDescription() + " " + item.getCategories();
-            });
-        } else {
-            throw new ComponentNotFoundException("Component not found: " + categoryId);
-        }
+        List<Component> theComponent = null;
+
+
+        theComponent = component.get();
+
+        return theComponent.stream().map(item -> {
+            return "Found component: " + item.getName() + " " + item.getDescription() + " " + item.getCategories();
+        });
     }
 
     @GetMapping("/name")

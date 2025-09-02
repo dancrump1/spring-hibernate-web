@@ -1,18 +1,8 @@
 package dbs.student_test.dao;
 
 import dbs.student_test.entity.Component;
+import org.springframework.data.jpa.repository.JpaRepository;
 
-import java.util.List;
-import java.util.Optional;
+public interface ComponentDAO extends JpaRepository<Component, Integer> {
 
-
-
-public interface ComponentDAO {
-    void save(Component var1);
-
-    Component findByTitle(String var1);
-
-    List<Component> findAll();
-
-    List<Component> findByCategory(int var1);
 }

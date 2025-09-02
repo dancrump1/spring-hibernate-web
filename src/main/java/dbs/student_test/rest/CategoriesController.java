@@ -4,19 +4,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import dbs.student_test.entity.Category;
 import dbs.student_test.service.CategoryService;
-import dbs.student_test.service.CategoryServiceImpl;
 import dbs.student_test.entity.Component;
 import dbs.student_test.service.ComponentService;
-import dbs.student_test.service.ComponentServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @CrossOrigin(origins = "http://localhost:3008")
@@ -24,28 +19,28 @@ import java.util.stream.Collectors;
 @RequestMapping("/category")
 public class CategoriesController {
 
-    private CategoryServiceImpl categoryService;
-    private ComponentServiceImpl componentService;
-    private ObjectMapper objectMapper;
+    private final CategoryService categoryService;
+    private ComponentService componentService;
+    private final ObjectMapper objectMapper;
 
     @Autowired
-    public CategoriesController(CategoryServiceImpl theCategoryService, ComponentServiceImpl theComponentService, ObjectMapper theObjectmapper) {
+    public CategoriesController(CategoryService theCategoryService, ComponentService theComponentService, ObjectMapper theObjectmapper) {
         categoryService = theCategoryService;
         componentService = theComponentService;
         objectMapper = theObjectmapper;
     }
 
 
-    public void DemoComponentController(ComponentServiceImpl theComponentService) {
+    public void DemoComponentController(ComponentService theComponentService) {
         componentService = theComponentService;
     }
 
     @GetMapping("/name/{category_name}")
-    public Category findByTitle(@PathVariable String category_name) {
-        Category category = categoryService.findByTitle(category_name);
+    public Category findByTitle(@PathVariable Integer category_name) {
+        Optional<Category> category = categoryService.findById(category_name);
 
-        if (category != null) {
-            return category;
+        if (category.isPresent()) {
+            return category.get();
         } else {
             throw new ComponentNotFoundException("Category not found: " + category_name);
         }
@@ -118,13 +113,13 @@ public class CategoriesController {
             @PathVariable int id,
             @RequestBody Map<String, String> requestBody) {
 
-        Category tempCategory = categoryService.findById(id);
+        Optional<Category> tempCategory = categoryService.findById(id);
 
-        if(tempCategory == null){
+        if(tempCategory.isEmpty()){
             throw new ComponentNotFoundException("Category not found with id " + id);
         }
 
-        Category patchedCategory = apply(requestBody, tempCategory);
+        Category patchedCategory = apply(requestBody, tempCategory.get());
 
         categoryService.save(patchedCategory);
 

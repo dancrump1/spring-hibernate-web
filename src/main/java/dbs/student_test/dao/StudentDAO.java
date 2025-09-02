@@ -1,15 +1,9 @@
 package dbs.student_test.dao;
 
 import dbs.student_test.entity.Student;
-import java.util.List;
+import org.springframework.data.jpa.repository.JpaRepository;
 
 
-public interface StudentDAO {
-    void save(Student var1);
+public interface StudentDAO extends JpaRepository<Student, Integer> {
 
-    Student findById(Integer var1);
-
-    List<Student> findAll();
-
-    List<Student> findByLastName(String var1);
 }

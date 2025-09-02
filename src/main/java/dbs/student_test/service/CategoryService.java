@@ -1,18 +1,10 @@
 package dbs.student_test.service;
 
 import dbs.student_test.entity.Category;
+import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 
-public interface CategoryService {
-    Category save(Category patchedCategory);
-
-    List<Category> findAll();
-
-    Category findByTitle(String var1);
-
-    Category findById(int var1);
-
-    Category findByName(String var1);
+public interface CategoryService extends JpaRepository<Category, Integer> {
 
 }
