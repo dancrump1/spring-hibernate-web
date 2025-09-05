@@ -2,7 +2,7 @@ package dbs.student_test.rest;
 
 import org.springframework.web.bind.annotation.*;
 
-@CrossOrigin(origins = "http://localhost:3008")
+@CrossOrigin(origins = "https://components.drivedev.net/")
 @RestController
 @RequestMapping("/test")
 public class DemoRestController {

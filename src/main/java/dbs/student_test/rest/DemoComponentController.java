@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-@CrossOrigin(origins = "http://localhost:3008")
+@CrossOrigin(origins = "https://components.drivedev.net/")
 @RestController
 @RequestMapping("/components")
 public class DemoComponentController {
