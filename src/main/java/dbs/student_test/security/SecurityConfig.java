@@ -28,8 +28,9 @@ public class SecurityConfig {
         http.authorizeHttpRequests(configurer ->
                 configurer.requestMatchers(HttpMethod.GET, "/magic-api/categories").hasRole("MANAGER")
                         .requestMatchers(HttpMethod.GET, "/").permitAll()
-                        .requestMatchers(HttpMethod.PATCH, "/category/*/description").hasRole("EMPLOYEE")
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/components/name/*").permitAll()
+                        .requestMatchers(HttpMethod.PATCH, "/category/*/description").hasRole("EMPLOYEE")
                         .anyRequest().authenticated()
         );
 
