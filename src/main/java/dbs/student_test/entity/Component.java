@@ -19,6 +19,7 @@ public class Component {
     private String description;
 
     @Column(name = "categories", columnDefinition = "VARCHAR(255)")
+    @OneToMany(mappedBy = "categories", cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
     private String categories;
 
     public int getId() {

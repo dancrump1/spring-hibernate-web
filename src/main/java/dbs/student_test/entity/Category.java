@@ -1,6 +1,9 @@
 package dbs.student_test.entity;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.Cascade;
+
+import java.util.Arrays;
 
 @Entity
 @Table(name = "categories")
@@ -15,6 +18,18 @@ public class Category {
 
     @Column(name = "description")
     private String description;
+
+    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
+    @JoinTable(name = "")
+    private int[] components;
+
+    public int[] getComponents() {
+        return components;
+    }
+
+    public void setComponents(int[] components) {
+        this.components = components;
+    }
 
     public int getId() {
         return id;
@@ -32,11 +47,22 @@ public class Category {
         this.title = title;
     }
 
+
     public String getDescription() {
         return description;
     }
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    @Override
+    public String toString() {
+        return "Category{" +
+                "id=" + id +
+                ", title='" + title + '\'' +
+                ", description='" + description + '\'' +
+                ", components=" + Arrays.toString(components) +
+                '}';
     }
 }

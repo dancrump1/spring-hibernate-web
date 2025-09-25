@@ -14,11 +14,11 @@ import java.util.stream.Stream;
 @CrossOrigin(origins = "https://components.drivedev.net/")
 @RestController
 @RequestMapping("/components")
-public class DemoComponentController {
+public class ComponentController {
 
     private final ComponentService componentService;
 
-    public DemoComponentController(ComponentService componentService) {
+    public ComponentController(ComponentService componentService) {
         this.componentService = componentService;
     }
 
