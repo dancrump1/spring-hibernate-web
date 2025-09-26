@@ -18,9 +18,17 @@ public class Component {
     @Column(name = "description")
     private String description;
 
-    @Column(name = "categories", columnDefinition = "VARCHAR(255)")
-    @OneToMany(mappedBy = "categories", cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
+//    @Column(name = "categories", columnDefinition = "VARCHAR(255)")
+//    @OneToMany(mappedBy = "categories", cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
     private String categories;
+
+    public Component() {
+
+    }
+
+    public Component(String name) {
+        this.name = name;
+    }
 
     public int getId() {
         return id;

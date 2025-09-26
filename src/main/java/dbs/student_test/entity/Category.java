@@ -19,9 +19,17 @@ public class Category {
     @Column(name = "description")
     private String description;
 
-    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
-    @JoinTable(name = "")
+//    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
+//    @JoinTable(name = "")
     private int[] components;
+
+    public Category() {
+
+    }
+//
+    public Category(String name) {
+        this.title = name;
+    }
 
     public int[] getComponents() {
         return components;
@@ -62,7 +70,7 @@ public class Category {
                 "id=" + id +
                 ", title='" + title + '\'' +
                 ", description='" + description + '\'' +
-                ", components=" + Arrays.toString(components) +
+//                ", components=" + Arrays.toString(components) +
                 '}';
     }
 }
