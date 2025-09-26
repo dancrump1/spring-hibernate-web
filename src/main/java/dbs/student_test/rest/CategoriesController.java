@@ -135,6 +135,18 @@ public class CategoriesController {
         return objectMapper.convertValue(categoryNode, Category.class);
     }
 
+    @PutMapping("/new/category")
+    public void addCategory(
+            @RequestBody Map<String, String> requestBody
+    ) {
+        Category newCategory = new Category();
+
+        newCategory.setTitle(requestBody.get("title"));
+        newCategory.setDescription(requestBody.get("description"));
+
+        categoryService.save(newCategory);
+    }
+
 
     @ExceptionHandler
     public ResponseEntity<ComponentErrorResponse> handleException(ComponentNotFoundException exc) {

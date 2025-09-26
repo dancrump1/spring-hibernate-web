@@ -8,6 +8,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.web.bind.annotation.PatchMapping;
 
 import java.util.List;
 
@@ -31,31 +32,14 @@ public class DemoApplication {
 //    4. Allow editing title and description of categories
 //    5. Allow editing the description of the components
 
-    //  Fetch Categories
-    //  TODO: move to service and tie into endpoint?
-    private List<Category> fetchCategories(CategoryDAO categoryDao) {
-        System.out.println("fetchCategory");
+    //  Fetch Categories -- DONE IN SERVICE
 
-        Category tempCategory;
 
-        if (categoryDao.findAll().isEmpty()) {
-            tempCategory = new Category("new_category");
-            categoryDao.save(tempCategory);
-        }
+    //    FetchComponents -- DONE IN SERVICE
 
-        return categoryDao.findAll();
-    }
 
-    //    FetchComponents
-    //    TODO: Move to service and tie into endpoint?
-    private List<Component> fetchComponents(ComponentDAO componentDao) {
+//    Add Category -- DONE IN SERVICE
 
-        System.out.println("fetch components");
-
-        return componentDao.findAll();
-    }
-
-//    Add Category
 //    Add component(s) to category
 //    remove component(s) from category
 //    delete category
