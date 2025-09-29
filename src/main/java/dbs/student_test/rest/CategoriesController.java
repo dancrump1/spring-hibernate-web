@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.*;
 import java.util.stream.Collectors;
 
-@CrossOrigin(origins = "https://components.drivedev.net/")
+@CrossOrigin(origins = {"https://ijwdotai.com/", "https://components.drivedev.net"})
 @RestController
 @RequestMapping("/category")
 public class CategoriesController {
