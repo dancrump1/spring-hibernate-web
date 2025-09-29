@@ -32,6 +32,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/components/name/*").permitAll()
                         .requestMatchers(HttpMethod.PATCH, "/category/*/description").hasRole("EMPLOYEE")
+                        .requestMatchers(HttpMethod.PUT, "/category/**").permitAll()
                         .anyRequest().authenticated()
         );
 
