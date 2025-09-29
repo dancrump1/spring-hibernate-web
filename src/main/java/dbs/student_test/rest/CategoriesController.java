@@ -57,11 +57,21 @@ public class CategoriesController {
         }
 
         // getters & setters
-        public String getDescription() { return description; }
-        public void setDescription(String description) { this.description = description; }
+        public String getDescription() {
+            return description;
+        }
 
-        public List<String> getComponents() { return components; }
-        public void setComponents(List<String> components) { this.components = components; }
+        public void setDescription(String description) {
+            this.description = description;
+        }
+
+        public List<String> getComponents() {
+            return components;
+        }
+
+        public void setComponents(List<String> components) {
+            this.components = components;
+        }
     }
 
     @GetMapping("/name")
@@ -72,16 +82,22 @@ public class CategoriesController {
         }
 
         List<Component> components = componentService.findAll();
-//        if (components.isEmpty()) {
-//            throw new ComponentNotFoundException("Components not found");
-//        }
+        if (components.isEmpty()) {
+            throw new ComponentNotFoundException("Components not found");
+        }
 
-        // Build lookup maps
+        // Build lookup map for categories
         Map<Integer, Category> categoryIdToCategory = categories.stream()
                 .collect(Collectors.toMap(Category::getId, c -> c));
 
         Map<String, CategoryResponse> categoriesMap = new LinkedHashMap<>();
 
+        // ✅ Pre-populate all categories with empty components list
+        for (Category category : categories) {
+            categoriesMap.put(category.getTitle(), new CategoryResponse(category.getDescription()));
+        }
+
+        // Assign components to categories
         for (Component component : components) {
             String raw = component.getCategories();
             if (raw != null && !raw.isBlank()) {
@@ -115,7 +131,7 @@ public class CategoriesController {
 
         Optional<Category> tempCategory = categoryService.findById(id);
 
-        if(tempCategory.isEmpty()){
+        if (tempCategory.isEmpty()) {
             throw new ComponentNotFoundException("Category not found with id " + id);
         }
 
