@@ -72,9 +72,9 @@ public class CategoriesController {
         }
 
         List<Component> components = componentService.findAll();
-        if (components.isEmpty()) {
-            throw new ComponentNotFoundException("Components not found");
-        }
+//        if (components.isEmpty()) {
+//            throw new ComponentNotFoundException("Components not found");
+//        }
 
         // Build lookup maps
         Map<Integer, Category> categoryIdToCategory = categories.stream()
