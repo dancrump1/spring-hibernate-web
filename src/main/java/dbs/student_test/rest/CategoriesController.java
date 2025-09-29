@@ -49,11 +49,21 @@ public class CategoriesController {
     // DTO for the response
     public static class CategoryResponse {
         private String description;
+        private int id;
         private List<String> components;
 
-        public CategoryResponse(String description) {
+        public CategoryResponse(String description, int id) {
             this.description = description;
+            this.id = id;
             this.components = new ArrayList<>();
+        }
+
+        public int getId() {
+            return id;
+        }
+
+        public void setId(int id) {
+            this.id = id;
         }
 
         // getters & setters
@@ -94,7 +104,7 @@ public class CategoriesController {
 
         // ✅ Pre-populate all categories with empty components list
         for (Category category : categories) {
-            categoriesMap.put(category.getTitle(), new CategoryResponse(category.getDescription()));
+            categoriesMap.put(category.getTitle(), new CategoryResponse(category.getDescription(), category.getId()));
         }
 
         // Assign components to categories
@@ -112,7 +122,7 @@ public class CategoriesController {
                         if (category != null) {
                             categoriesMap
                                     .computeIfAbsent(category.getTitle(),
-                                            k -> new CategoryResponse(category.getDescription()))
+                                            k -> new CategoryResponse(category.getDescription(), category.getId()))
                                     .getComponents()
                                     .add(component.getName());
                         }
