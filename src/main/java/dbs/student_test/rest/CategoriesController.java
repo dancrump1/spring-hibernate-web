@@ -164,15 +164,11 @@ public class CategoriesController {
     }
 
     @DeleteMapping("/remove/{id}")
-    public void deleteCategory(
-            @PathVariable int id
-    ) {
-        Optional<Category> categoryToDelete = categoryService.findById(id);
-        if (categoryToDelete.isEmpty()) {
-            throw new ComponentNotFoundException("Categories not found");
-        } else {
-            categoryService.delete(categoryToDelete);
-        }
+    public void deleteCategory(@PathVariable int id) {
+        Category categoryToDelete = categoryService.findById(id)
+                .orElseThrow(() -> new ComponentNotFoundException("Category not found"));
+
+        categoryService.delete(categoryToDelete);
     }
 
 

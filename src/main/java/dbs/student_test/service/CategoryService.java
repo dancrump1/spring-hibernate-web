@@ -8,5 +8,4 @@ import java.util.Optional;
 
 public interface CategoryService extends JpaRepository<Category, Integer> {
 
-    void delete(Optional<Category> categoryToDelete);
 }
