@@ -1,6 +1,7 @@
 package dbs.student_test.entity;
 
 import jakarta.persistence.*;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.List;
 
 @Entity
@@ -12,7 +13,6 @@ public class Component {
     @Column(name = "id")
     private int id;
 
-
     @Column(name = "name")
     private String title;
 
@@ -20,6 +20,7 @@ public class Component {
     private String description;
 
     @ManyToMany(mappedBy = "components")
+    @JsonIgnore
     private List<Category> categories;
 
     public List<Category> getCategories() {
@@ -57,6 +58,5 @@ public class Component {
     public void setDescription(String description) {
         this.description = description;
     }
-
 
 }

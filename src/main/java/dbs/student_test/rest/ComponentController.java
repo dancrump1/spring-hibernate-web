@@ -1,5 +1,6 @@
 package dbs.student_test.rest;
 
+import dbs.student_test.entity.Category;
 import dbs.student_test.entity.Component;
 import dbs.student_test.service.ComponentService;
 import org.springframework.http.HttpStatus;
@@ -8,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Stream;
 
@@ -64,6 +66,18 @@ public class ComponentController {
         } else {
             throw new ComponentNotFoundException("Components not found: ");
         }
+    }
+
+    @PutMapping("/new/component")
+    public void addComponent(
+            @RequestBody Map<String, String> requestBody
+    ) {
+        Component newComponent = new Component();
+
+        newComponent.setTitle(requestBody.get("title"));
+        newComponent.setDescription(requestBody.get("description"));
+
+        componentService.save(newComponent);
     }
 
     @ExceptionHandler

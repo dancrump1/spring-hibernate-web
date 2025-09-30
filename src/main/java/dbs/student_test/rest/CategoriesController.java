@@ -36,14 +36,20 @@ public class CategoriesController {
     }
 
     @GetMapping("/name/{category_name}")
-    public Category findByTitle(@PathVariable Integer category_name) {
-        Optional<Category> category = categoryService.findById(category_name);
+    public CategoryResponse findByTitle(@PathVariable String category_name) {
+        Category category = categoryService.findByTitle(category_name)
+                .orElseThrow(() -> new ComponentNotFoundException("Category not found: " + category_name));
 
-        if (category.isPresent()) {
-            return category.get();
-        } else {
-            throw new ComponentNotFoundException("Category not found: " + category_name);
-        }
+        // Map to DTO to avoid infinite recursion
+        CategoryResponse response = new CategoryResponse(
+                category.getDescription(),
+                category.getId(),
+                category.getTitle()
+        );
+
+        category.getComponents().forEach(c -> response.getComponents().add(c.getTitle()));
+
+        return response;
     }
 
     // DTO for the response
