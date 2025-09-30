@@ -19,7 +19,7 @@ public class Component {
     @Column(name = "description")
     private String description;
 
-    @ManyToMany(mappedBy = "components")
+    @ManyToMany(mappedBy = "components", cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
     @JsonIgnore
     private List<Category> categories;
 

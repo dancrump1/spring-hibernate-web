@@ -1,7 +1,10 @@
 package dbs.student_test.rest;
 
+import dbs.student_test.entity.Category;
 import dbs.student_test.entity.Component;
+import dbs.student_test.service.CategoryService;
 import dbs.student_test.service.ComponentService;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,9 +21,11 @@ import java.util.stream.Stream;
 public class ComponentController {
 
     private final ComponentService componentService;
+    private final CategoryService categoryService;
 
-    public ComponentController(ComponentService componentService) {
+    public ComponentController(ComponentService componentService, CategoryService categoryService) {
         this.componentService = componentService;
+        this.categoryService = categoryService;
     }
 
     @GetMapping
@@ -77,6 +82,20 @@ public class ComponentController {
         newComponent.setDescription(requestBody.get("description"));
 
         componentService.save(newComponent);
+    }
+
+    @DeleteMapping("/remove/{name}")
+    @Transactional
+    public void deleteComponent(@PathVariable String name) {
+        Component componentToDelete = componentService.findByTitle(name)
+                .orElseThrow(() -> new ComponentNotFoundException("component not found"));
+
+        for (Category category : componentToDelete.getCategories()) {
+            category.getComponents().remove(componentToDelete);
+        }
+        categoryService.saveAll(componentToDelete.getCategories());
+
+        componentService.delete(componentToDelete);
     }
 
     @ExceptionHandler
