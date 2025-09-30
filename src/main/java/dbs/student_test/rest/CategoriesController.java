@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.*;
 import java.util.stream.Collectors;
 
-@CrossOrigin(origins = {"https://ijwdotai.com/", "https://components.drivedev.net", "http://localhost:3006"})
+@CrossOrigin(origins = { "https://ijwdotai.com", "https://components.drivedev.net", "http://localhost:3006" })
 @RestController
 @RequestMapping("/category")
 public class CategoriesController {
@@ -24,12 +24,12 @@ public class CategoriesController {
     private final ObjectMapper objectMapper;
 
     @Autowired
-    public CategoriesController(CategoryService theCategoryService, ComponentService theComponentService, ObjectMapper theObjectmapper) {
+    public CategoriesController(CategoryService theCategoryService, ComponentService theComponentService,
+            ObjectMapper theObjectmapper) {
         categoryService = theCategoryService;
         componentService = theComponentService;
         objectMapper = theObjectmapper;
     }
-
 
     public void DemoComponentController(ComponentService theComponentService) {
         componentService = theComponentService;
@@ -44,8 +44,7 @@ public class CategoriesController {
         CategoryResponse response = new CategoryResponse(
                 category.getDescription(),
                 category.getId(),
-                category.getTitle()
-        );
+                category.getTitle());
 
         category.getComponents().forEach(c -> response.getComponents().add(c.getTitle()));
 
@@ -107,7 +106,8 @@ public class CategoriesController {
         // Pre-populate all categories with empty components list
         Map<String, CategoryResponse> categoriesMap = new LinkedHashMap<>();
         for (Category category : categories) {
-            categoriesMap.put(category.getTitle(), new CategoryResponse(category.getDescription(), category.getId(), category.getTitle()));
+            categoriesMap.put(category.getTitle(),
+                    new CategoryResponse(category.getDescription(), category.getId(), category.getTitle()));
         }
 
         // Assign components to their categories
@@ -115,7 +115,8 @@ public class CategoriesController {
             for (Category category : component.getCategories()) {
                 categoriesMap
                         .computeIfAbsent(category.getTitle(),
-                                k -> new CategoryResponse(category.getDescription(), category.getId(), category.getTitle()))
+                                k -> new CategoryResponse(category.getDescription(), category.getId(),
+                                        category.getTitle()))
                         .getComponents()
                         .add(component.getTitle());
             }
@@ -143,7 +144,7 @@ public class CategoriesController {
             List<String> titles = (List<String>) requestBody.get("components");
 
             // Clear current components first (optional)
-//            category.getComponents().clear();
+            // category.getComponents().clear();
 
             for (String title : titles) {
                 Component component = componentService.findByTitle(title)
@@ -171,8 +172,7 @@ public class CategoriesController {
 
     @PutMapping("/new/category")
     public void addCategory(
-            @RequestBody Map<String, String> requestBody
-    ) {
+            @RequestBody Map<String, String> requestBody) {
         Category newCategory = new Category();
 
         newCategory.setTitle(requestBody.get("title"));
@@ -188,7 +188,6 @@ public class CategoriesController {
 
         categoryService.delete(categoryToDelete);
     }
-
 
     @ExceptionHandler
     public ResponseEntity<ComponentErrorResponse> handleException(ComponentNotFoundException exc) {

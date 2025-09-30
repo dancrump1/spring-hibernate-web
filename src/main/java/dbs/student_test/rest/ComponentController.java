@@ -1,6 +1,5 @@
 package dbs.student_test.rest;
 
-import dbs.student_test.entity.Category;
 import dbs.student_test.entity.Component;
 import dbs.student_test.service.ComponentService;
 import org.springframework.http.HttpStatus;
@@ -13,7 +12,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-@CrossOrigin(origins = {"https://ijwdotai.com/", "https://components.drivedev.net", "http://localhost:3006"})
+@CrossOrigin(origins = { "https://ijwdotai.com", "https://components.drivedev.net", "http://localhost:3006" })
 @RestController
 @RequestMapping("/components")
 public class ComponentController {
@@ -35,7 +34,8 @@ public class ComponentController {
         Optional<Component> component = componentService.findById(component_name);
 
         if (component.isPresent()) {
-            return "Found component: " + component.get().getTitle() + " " + component.get().getDescription() + " " + component.get().getCategories();
+            return "Found component: " + component.get().getTitle() + " " + component.get().getDescription() + " "
+                    + component.get().getCategories();
         } else {
             throw new ComponentNotFoundException("Component not found: " + component_name);
         }
@@ -44,10 +44,10 @@ public class ComponentController {
     @GetMapping("/category/{categoryId}")
     public Stream<String> findByCategory(@PathVariable Integer categoryId) {
 
-        Optional<List<Component>> component = Optional.of(componentService.findAllById(Collections.singleton(categoryId)));
+        Optional<List<Component>> component = Optional
+                .of(componentService.findAllById(Collections.singleton(categoryId)));
 
         List<Component> theComponent = null;
-
 
         theComponent = component.get();
 
@@ -70,8 +70,7 @@ public class ComponentController {
 
     @PutMapping("/new/component")
     public void addComponent(
-            @RequestBody Map<String, String> requestBody
-    ) {
+            @RequestBody Map<String, String> requestBody) {
         Component newComponent = new Component();
 
         newComponent.setTitle(requestBody.get("title"));

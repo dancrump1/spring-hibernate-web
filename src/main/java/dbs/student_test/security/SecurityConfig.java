@@ -27,14 +27,19 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests(configurer ->
-                configurer.requestMatchers(HttpMethod.GET, "/magic-api/categories").hasRole("MANAGER")
+                configurer
+                        .requestMatchers(HttpMethod.GET, "/magic-api/categories").hasRole("MANAGER")
                         .requestMatchers(HttpMethod.GET, "/").permitAll()
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/components/name/*").permitAll()
                         .requestMatchers(HttpMethod.PATCH, "/category/*/description").hasRole("EMPLOYEE")
                         .requestMatchers(HttpMethod.PUT, "/category/**").permitAll()
-                        .anyRequest().authenticated()
+                        .requestMatchers(HttpMethod.GET, "/components/name/*").permitAll()
+                        .requestMatchers(HttpMethod.PUT, "/components/new/component").hasRole("EMPLOYEE")
+                        .anyRequest()
+                        .authenticated()
         );
+
+
 
         http.httpBasic(Customizer.withDefaults());
 
