@@ -1,9 +1,8 @@
 package dbs.student_test.entity;
 
 import jakarta.persistence.*;
-import org.hibernate.annotations.Cascade;
 
-import java.util.Arrays;
+import java.util.List;
 
 @Entity
 @Table(name = "categories")
@@ -19,23 +18,27 @@ public class Category {
     @Column(name = "description")
     private String description;
 
-//    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
-//    @JoinTable(name = "")
-    private int[] components;
+    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
+    @JoinTable(
+            name = "category_component",
+            joinColumns = @JoinColumn(name = "category_id"),
+            inverseJoinColumns = @JoinColumn(name = "component_id")
+    )
+    private List<Component> components;
 
     public Category() {
 
     }
-//
+
     public Category(String name) {
         this.title = name;
     }
 
-    public int[] getComponents() {
+    public List<Component> getComponents() {
         return components;
     }
 
-    public void setComponents(int[] components) {
+    public void setComponents(List<Component> components) {
         this.components = components;
     }
 

@@ -12,22 +12,34 @@ public class Component {
     @Column(name = "id")
     private int id;
 
+
     @Column(name = "name")
-    private String name;
+    private String title;
 
     @Column(name = "description")
     private String description;
 
-//    @Column(name = "categories", columnDefinition = "VARCHAR(255)")
-//    @OneToMany(mappedBy = "categories", cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
-    private String categories;
+    @ManyToMany(mappedBy = "components")
+    private List<Category> categories;
+
+    public List<Category> getCategories() {
+        return categories;
+    }
+
+    public void setCategories(List<Category> categories) {
+        this.categories = categories;
+    }
 
     public Component() {
 
     }
 
-    public Component(String name) {
-        this.name = name;
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     public int getId() {
@@ -38,14 +50,6 @@ public class Component {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String title) {
-        this.name = title;
-    }
-
     public String getDescription() {
         return description;
     }
@@ -54,11 +58,5 @@ public class Component {
         this.description = description;
     }
 
-    public String getCategories() {
-        return categories;
-    }
 
-    public void setCategories(List<Integer> categories) {
-        this.categories = categories.toString();
-    }
 }

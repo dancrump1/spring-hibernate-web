@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.*;
 import java.util.stream.Collectors;
 
-@CrossOrigin(origins = {"https://ijwdotai.com/", "https://components.drivedev.net"})
+@CrossOrigin(origins = {"https://ijwdotai.com/", "https://components.drivedev.net", "http://localhost:3006"})
 @RestController
 @RequestMapping("/category")
 public class CategoriesController {
@@ -51,11 +51,13 @@ public class CategoriesController {
         private String description;
         private int id;
         private List<String> components;
+        private String name;
 
-        public CategoryResponse(String description, int id) {
+        public CategoryResponse(String description, int id, String name) {
             this.description = description;
             this.id = id;
             this.components = new ArrayList<>();
+            this.name = name;
         }
 
         public int getId() {
@@ -96,38 +98,20 @@ public class CategoriesController {
             throw new ComponentNotFoundException("Components not found");
         }
 
-        // Build lookup map for categories
-        Map<Integer, Category> categoryIdToCategory = categories.stream()
-                .collect(Collectors.toMap(Category::getId, c -> c));
-
+        // Pre-populate all categories with empty components list
         Map<String, CategoryResponse> categoriesMap = new LinkedHashMap<>();
-
-        // ✅ Pre-populate all categories with empty components list
         for (Category category : categories) {
-            categoriesMap.put(category.getTitle(), new CategoryResponse(category.getDescription(), category.getId()));
+            categoriesMap.put(category.getTitle(), new CategoryResponse(category.getDescription(), category.getId(), category.getTitle()));
         }
 
-        // Assign components to categories
+        // Assign components to their categories
         for (Component component : components) {
-            String raw = component.getCategories();
-            if (raw != null && !raw.isBlank()) {
-                String cleaned = raw.replaceAll("[\\[\\]]", "");
-                String[] catIds = cleaned.split(",");
-
-                for (String catIdStr : catIds) {
-                    if (!catIdStr.isBlank()) {
-                        int catId = Integer.parseInt(catIdStr.trim());
-                        Category category = categoryIdToCategory.get(catId);
-
-                        if (category != null) {
-                            categoriesMap
-                                    .computeIfAbsent(category.getTitle(),
-                                            k -> new CategoryResponse(category.getDescription(), category.getId()))
-                                    .getComponents()
-                                    .add(component.getName());
-                        }
-                    }
-                }
+            for (Category category : component.getCategories()) {
+                categoriesMap
+                        .computeIfAbsent(category.getTitle(),
+                                k -> new CategoryResponse(category.getDescription(), category.getId(), category.getTitle()))
+                        .getComponents()
+                        .add(component.getTitle());
             }
         }
 
@@ -137,19 +121,37 @@ public class CategoriesController {
     @PatchMapping("/{id}/description")
     public Category updateCategoryDescription(
             @PathVariable int id,
-            @RequestBody Map<String, String> requestBody) {
+            @RequestBody Map<String, Object> requestBody) {
 
-        Optional<Category> tempCategory = categoryService.findById(id);
+        Category category = categoryService.findById(id)
+                .orElseThrow(() -> new ComponentNotFoundException("Category not found with id " + id));
 
-        if (tempCategory.isEmpty()) {
-            throw new ComponentNotFoundException("Category not found with id " + id);
+        // Update description if present
+        if (requestBody.containsKey("description")) {
+            category.setDescription((String) requestBody.get("description"));
         }
 
-        Category patchedCategory = apply(requestBody, tempCategory.get());
+        // Update components if present
+        if (requestBody.containsKey("components")) {
+            // Assuming frontend sends JSON array of titles: ["Resistor", "Capacitor"]
+            List<String> titles = (List<String>) requestBody.get("components");
 
-        categoryService.save(patchedCategory);
+            // Clear current components first (optional)
+//            category.getComponents().clear();
 
-        return patchedCategory;
+            for (String title : titles) {
+                Component component = componentService.findByTitle(title)
+                        .orElseThrow(() -> new ComponentNotFoundException("Component not found: " + title));
+                List<Component> tempCompList = category.getComponents();
+
+                tempCompList.add(component);
+                // Add component using helper method to sync both sides
+                category.setComponents(tempCompList);
+            }
+        }
+
+        // Save the owning side (category)
+        return categoryService.save(category);
     }
 
     private Category apply(Map<String, String> requestBody, Category tempCategory) {

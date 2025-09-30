@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-@CrossOrigin(origins = {"https://ijwdotai.com/", "https://components.drivedev.net"})
+@CrossOrigin(origins = {"https://ijwdotai.com/", "https://components.drivedev.net", "http://localhost:3006"})
 @RestController
 @RequestMapping("/components")
 public class ComponentController {
@@ -33,7 +33,7 @@ public class ComponentController {
         Optional<Component> component = componentService.findById(component_name);
 
         if (component.isPresent()) {
-            return "Found component: " + component.get().getName() + " " + component.get().getDescription() + " " + component.get().getCategories();
+            return "Found component: " + component.get().getTitle() + " " + component.get().getDescription() + " " + component.get().getCategories();
         } else {
             throw new ComponentNotFoundException("Component not found: " + component_name);
         }
@@ -50,7 +50,7 @@ public class ComponentController {
         theComponent = component.get();
 
         return theComponent.stream().map(item -> {
-            return "Found component: " + item.getName() + " " + item.getDescription() + " " + item.getCategories();
+            return "Found component: " + item.getTitle() + " " + item.getDescription() + " " + item.getCategories();
         });
     }
 
