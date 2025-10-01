@@ -138,25 +138,21 @@ public class CategoriesController {
             category.setDescription((String) requestBody.get("description"));
         }
 
-        // Update components if present
+        // Update components if present (including empty list)
         if (requestBody.containsKey("components")) {
-            // Assuming frontend sends JSON array of titles: ["Resistor", "Capacitor"]
             List<String> titles = (List<String>) requestBody.get("components");
 
-            // Clear current components first (optional)
-            // category.getComponents().clear();
+            // Always reset components to whatever is sent
+            List<Component> newComponents = new ArrayList<>();
 
             for (String title : titles) {
                 Component component = componentService.findByTitle(title)
                         .orElseThrow(() -> new ComponentNotFoundException("Component not found: " + title));
-                List<Component> tempCompList = category.getComponents();
-
-                tempCompList.add(component);
-                // Add component using helper method to sync both sides
-                category.setComponents(tempCompList);
+                newComponents.add(component);
             }
-        }
 
+            category.setComponents(newComponents); // replaces old list, even if empty
+        }
         // Save the owning side (category)
         return categoryService.save(category);
     }
